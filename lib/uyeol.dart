@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'services/authService.dart';
 
 class uyeol extends StatefulWidget {
   @override
@@ -10,6 +11,9 @@ class _uyeolState extends State<uyeol> {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+
+  // Create an instance of AuthService
+  AuthService _authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +63,12 @@ class _uyeolState extends State<uyeol> {
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    // Üye olma işlemleri burada gerçekleştirilebilir
+                    // Call registerUser function from AuthService
+                    _authService.signUp(
+                      name: _nameController.text,
+                      email: _emailController.text,
+                      password: _passwordController.text,
+                    );
                     print('Ad Soyad: ${_nameController.text}');
                     print('E-mail: ${_emailController.text}');
                     print('Şifre: ${_passwordController.text}');

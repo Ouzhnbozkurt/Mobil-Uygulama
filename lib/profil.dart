@@ -1,5 +1,6 @@
-import 'package:mobil_uygulama/uyeol.dart';
 import 'package:flutter/material.dart';
+import 'package:mobil_uygulama/uyeol.dart';
+import 'services/authService.dart';
 
 class profil extends StatefulWidget {
   @override
@@ -10,6 +11,9 @@ class _profilState extends State<profil> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+
+  // Create an instance of AuthService
+  AuthService _authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +51,11 @@ class _profilState extends State<profil> {
                   ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        // Giriş butonuna tıklandığında yapılacak işlemleri buraya ekleyebilirsiniz
+                        // Call signIn method from AuthService
+                        _authService.signIn(
+                          email: _emailController.text,
+                          password: _passwordController.text,
+                        );
                         print('E-mail: ${_emailController.text}');
                         print('Şifre: ${_passwordController.text}');
                       }
