@@ -1,91 +1,127 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mobil_uygulama/girisyap.dart';
 import 'package:mobil_uygulama/profil.dart';
 import 'package:mobil_uygulama/anasayfa.dart';
 import 'package:mobil_uygulama/sepet.dart';
-import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:mobil_uygulama/urunyonetimi.dart';
+
 import 'firebase_options.dart';
-
-// ...
-
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+
+  runApp(MaterialApp(
+    home: GirisKontrol(),
+  ));
 }
 
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key});
+class GirisKontrol extends StatelessWidget {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Urunler(),
-    );
+    User? user = _auth.currentUser;
+
+    if (user != null) {
+      // Kullanıcı giriş yapmışsa Urunler sayfasını göster
+      return Urunler();
+    } else {
+      // Kullanıcı giriş yapmamışsa Girisyap sayfasına yönlendir
+      return girisyap();
+    }
   }
 }
 
 class Urunler extends StatefulWidget {
-  const Urunler({Key? key});
-
   @override
   State<Urunler> createState() => _UrunlerState();
 }
 
 class _UrunlerState extends State<Urunler> {
-  int _selectedIndex = 0;
+  int _seciliIndex = 0;
 
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+      _seciliIndex = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    User? user = FirebaseAuth.instance.currentUser;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Alışveriş Uygulaması'),
       ),
       body: Center(
-        child: _getPage(_selectedIndex),
+        child: _sayfaGetir(_seciliIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Anasayfa',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
-            label: 'Sepet',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            label: 'Profil',
-          ),
-        ],
-        currentIndex: _selectedIndex,
+        items: _buildBottomNavBarItems(user),
+        currentIndex: _seciliIndex,
         selectedItemColor: Colors.amber[800],
         onTap: _onItemTapped,
       ),
     );
   }
 
-  Widget _getPage(int index) {
+  List<BottomNavigationBarItem> _buildBottomNavBarItems(User? user) {
+    if (user != null && user.email == "admin@admin.com") {
+      // Admin kullanıcısı ise farklı BottomNavigationBarItem'lar göster
+      return const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          label: 'Anasayfa',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.settings),
+          label: 'Ürün Ekleme',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.account_circle),
+          label: 'Profil',
+        ),
+      ];
+    } else {
+      // Diğer kullanıcılar için varsayılan BottomNavigationBarItem'lar
+      return const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          label: 'Anasayfa',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.shopping_cart),
+          label: 'Sepet',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.account_circle),
+          label: 'Profil',
+        ),
+      ];
+    }
+  }
+
+  Widget _sayfaGetir(int index) {
+    User? user = FirebaseAuth.instance.currentUser;
     switch (index) {
       case 0:
         return anasayfa();
       case 1:
-        return sepet();
+          if (user != null && user.email == "admin@admin.com") {
+            return urunyonetimi();
+          } else {
+            return sepet();
+          }
       case 2:
         return profil();
       default:
-        return Container(); // Fallback, boş bir container veya hata sayfası eklenebilir.
+        return Container(); // Yedek, boş bir container veya hata sayfası eklenebilir.
     }
   }
 }

@@ -65,6 +65,7 @@ class _uyeolState extends State<uyeol> {
                   if (_formKey.currentState!.validate()) {
                     // Call registerUser function from AuthService
                     _authService.signUp(
+                      context,
                       name: _nameController.text,
                       email: _emailController.text,
                       password: _passwordController.text,
