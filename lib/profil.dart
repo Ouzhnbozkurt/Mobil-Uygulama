@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mobil_uygulama/isteklistesi.dart';
 import 'package:mobil_uygulama/main.dart';
+import 'package:mobil_uygulama/services/authService.dart';
 
 class Profil extends StatefulWidget {
   const Profil({super.key});
@@ -11,6 +13,19 @@ class Profil extends StatefulWidget {
 
 class _ProfilState extends State<Profil> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Future<bool> _isAdmin = Future<bool>.value(false);
+
+  @override
+  void initState() {
+    super.initState();
+    _updateAdminStatus();
+  }
+
+  Future<void> _updateAdminStatus() async {
+    _isAdmin = AuthService().isAdmin();
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +44,39 @@ class _ProfilState extends State<Profil> {
                     style: const TextStyle(fontSize: 20),
                   ),
                   const SizedBox(height: 16.0),
+                  FutureBuilder<bool>(
+                    future: _isAdmin,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return Text('Hata: ${snapshot.error}');
+                      } else {
+                        bool isAdmin = snapshot.data ?? false;
+                        if (!isAdmin) {
+                          return ElevatedButton(
+                            onPressed: () {
+                              // İstek listesi sayfasına geçiş yap
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const IstekListesi(),
+                                ),
+                              );
+                            },
+                            child: const Text(
+                              'İstek Listesi',
+                              style: TextStyle(
+                                color: Colors.deepOrangeAccent,
+                              ),
+                            ),
+                          );
+                        } else {
+                          return const SizedBox.shrink(); // Empty SizedBox if admin
+                        }
+                      }
+                    },
+                  ),
                   ElevatedButton(
                     onPressed: () async {
                       await _auth.signOut();
@@ -40,7 +88,7 @@ class _ProfilState extends State<Profil> {
                     child: const Text(
                       'Çıkış Yap',
                       style: TextStyle(
-                        color: Colors.deepOrangeAccent,
+                        color: Colors.purple,
                       ),
                     ),
                   ),
