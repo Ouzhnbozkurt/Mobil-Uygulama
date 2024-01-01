@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mobil_uygulama/services/authService.dart';
 import 'package:mobil_uygulama/services/productService.dart';
+import 'package:mobil_uygulama/services/cartService.dart';
 import 'package:mobil_uygulama/urunduzenle.dart';
 
 class Anasayfa extends StatefulWidget {
@@ -14,6 +15,7 @@ class Anasayfa extends StatefulWidget {
 class _AnasayfaState extends State<Anasayfa> {
   final AuthService _authService = AuthService();
   final ProductService _productService = ProductService();
+  final CartService _cartService = CartService();
 
   Future<bool> _isAdmin = Future<bool>.value(false);
   late Future<List<Map<String, dynamic>>> urunlerFuture;
@@ -80,6 +82,7 @@ class _AnasayfaState extends State<Anasayfa> {
                             });
                           } else {
                             // Admin değilse sepete ekle işlemi
+                            _cartService.createCart(urun: '${urunler[index]["id"]}'); // Sepete ekle fonksiyonu burada çağrılıyor
                             if (kDebugMode) {
                               print("Kullanıcı Butona tıklandı: ${urunler[index]["ad"]}");
                             }
