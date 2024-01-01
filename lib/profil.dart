@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:mobil_uygulama/girisyap.dart';
 import 'package:mobil_uygulama/main.dart';
 
-class profil extends StatefulWidget {
+class Profil extends StatefulWidget {
+  const Profil({super.key});
+
   @override
-  State<profil> createState() => _profilState();
+  State<Profil> createState() => _ProfilState();
 }
 
-class _profilState extends State<profil> {
+class _ProfilState extends State<Profil> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
@@ -25,9 +26,9 @@ class _profilState extends State<profil> {
                 children: [
                   Text(
                     'E-mail: ${user.email ?? "Belirtilmemiş"}',
-                    style: TextStyle(fontSize: 16),
+                    style: const TextStyle(fontSize: 20),
                   ),
-                  SizedBox(height: 16.0),
+                  const SizedBox(height: 16.0),
                   ElevatedButton(
                     onPressed: () async {
                       await _auth.signOut();
@@ -36,13 +37,18 @@ class _profilState extends State<profil> {
                         MaterialPageRoute(builder: (context) => GirisKontrol()),
                       );
                     },
-                    child: Text('Çıkış Yap'),
+                    child: const Text(
+                      'Çıkış Yap',
+                      style: TextStyle(
+                        color: Colors.deepOrangeAccent,
+                      ),
+                    ),
                   ),
                 ],
               ),
             );
           } else {
-            return Center(
+            return const Center(
               child: Text(
                 'Kullanıcı bulunamadı',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -55,22 +61,8 @@ class _profilState extends State<profil> {
   }
 }
 
-class Girisyap extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Text(
-          'Giriş Yap Sayfası',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-      ),
-    );
-  }
-}
-
 void main() {
-  runApp(MaterialApp(
-    home: profil(),
+  runApp(const MaterialApp(
+    home: Profil(),
   ));
 }

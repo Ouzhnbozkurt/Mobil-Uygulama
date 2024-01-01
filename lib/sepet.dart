@@ -1,11 +1,14 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class sepet extends StatefulWidget {
+class Sepet extends StatefulWidget {
+  const Sepet({super.key});
+
   @override
-  State<sepet> createState() => _sepetState();
+  State<Sepet> createState() => _SepetState();
 }
 
-class _sepetState extends State<sepet> {
+class _SepetState extends State<Sepet> {
   // Örnek ürün verileri
   List<Map<String, dynamic>> urunler = [
     {"ad": "Ürün 1", "fiyat": 20.0},
@@ -26,9 +29,16 @@ class _sepetState extends State<sepet> {
               trailing: ElevatedButton(
                 onPressed: () {
                   // Butona tıklandığında yapılacak işlemleri buraya ekleyebilirsiniz
-                  print("Butona tıklandı: ${urunler[index]["ad"]}");
+                  if (kDebugMode) {
+                    print("Butona tıklandı: ${urunler[index]["ad"]}");
+                  }
                 },
-                child: Text('Kaldır'),
+                child: const Text(
+                  'Kaldır',
+                  style: TextStyle(
+                    color: Colors.deepOrangeAccent,
+                  ),
+                ),
               ),
             ),
           );
@@ -39,7 +49,7 @@ class _sepetState extends State<sepet> {
 }
 
 void main() {
-  runApp(MaterialApp(
-    home: sepet(),
+  runApp(const MaterialApp(
+    home: Sepet(),
   ));
 }

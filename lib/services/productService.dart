@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class ProductService {
   final productCollection = FirebaseFirestore.instance.collection("products");
 
-  Future<void> productCreate({required String ad, required int fiyat}) async {
+  Future<void> createProduct({required String ad, required double fiyat}) async {
     try {
       await productCollection.add({
         "ad": ad,
@@ -18,6 +19,43 @@ class ProductService {
       Fluttertoast.showToast(
           msg: "Ürün Eklenirken Hata Oluştu",
           toastLength: Toast.LENGTH_SHORT
+      );
+    }
+  }
+
+  Future<void> updateProduct({
+    required String productId,
+    required String newName,
+    required double newPrice,
+  }) async {
+    try {
+      await productCollection.doc(productId).update({
+        "ad": newName,
+        "fiyat": newPrice,
+      });
+      Fluttertoast.showToast(
+          msg: "Ürün Güncellendi",
+          toastLength: Toast.LENGTH_SHORT
+      );
+    } catch (e) {
+      Fluttertoast.showToast(
+          msg: "Ürün Güncellenirken Hata Oluştu",
+          toastLength: Toast.LENGTH_SHORT
+      );
+    }
+  }
+
+  Future<void> deleteProduct(String productId) async {
+    try {
+      await productCollection.doc(productId).delete();
+      Fluttertoast.showToast(
+        msg: "Ürün Silindi",
+        toastLength: Toast.LENGTH_SHORT,
+      );
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Ürün Silinirken Hata Oluştu",
+        toastLength: Toast.LENGTH_SHORT,
       );
     }
   }
@@ -38,7 +76,9 @@ class ProductService {
 
       return products;
     } catch (e) {
-      print("Ürünler getirilirken hata oluştu: $e");
+      if (kDebugMode) {
+        print("Ürünler getirilirken hata oluştu: $e");
+      }
       return [];
     }
   }

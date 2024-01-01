@@ -1,25 +1,28 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'services/authService.dart';
 
-class uyeol extends StatefulWidget {
+class UyeOl extends StatefulWidget {
+  const UyeOl({super.key});
+
   @override
-  _uyeolState createState() => _uyeolState();
+  UyeOlState createState() => UyeOlState();
 }
 
-class _uyeolState extends State<uyeol> {
+class UyeOlState extends State<UyeOl> {
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   // Create an instance of AuthService
-  AuthService _authService = AuthService();
+  final AuthService _authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Üye Ol'),
+        title: const Text('Üye Ol'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -29,7 +32,7 @@ class _uyeolState extends State<uyeol> {
             children: [
               TextFormField(
                 controller: _nameController,
-                decoration: InputDecoration(labelText: 'Ad Soyad'),
+                decoration: const InputDecoration(labelText: 'Ad Soyad'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Lütfen adınızı ve soyadınızı girin';
@@ -39,7 +42,7 @@ class _uyeolState extends State<uyeol> {
               ),
               TextFormField(
                 controller: _emailController,
-                decoration: InputDecoration(labelText: 'E-mail'),
+                decoration: const InputDecoration(labelText: 'E-mail'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Lütfen bir e-mail girin';
@@ -50,7 +53,7 @@ class _uyeolState extends State<uyeol> {
               ),
               TextFormField(
                 controller: _passwordController,
-                decoration: InputDecoration(labelText: 'Şifre'),
+                decoration: const InputDecoration(labelText: 'Şifre'),
                 obscureText: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -59,7 +62,7 @@ class _uyeolState extends State<uyeol> {
                   return null;
                 },
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
@@ -70,12 +73,18 @@ class _uyeolState extends State<uyeol> {
                       email: _emailController.text,
                       password: _passwordController.text,
                     );
-                    print('Ad Soyad: ${_nameController.text}');
-                    print('E-mail: ${_emailController.text}');
-                    print('Şifre: ${_passwordController.text}');
+                    if (kDebugMode) {
+                      print('Ad Soyad: ${_nameController.text}');
+                    }
+                    if (kDebugMode) {
+                      print('E-mail: ${_emailController.text}');
+                    }
+                    if (kDebugMode) {
+                      print('Şifre: ${_passwordController.text}');
+                    }
                   }
                 },
-                child: Text('Üye Ol'),
+                child: const Text('Üye Ol'),
               ),
             ],
           ),
@@ -86,7 +95,7 @@ class _uyeolState extends State<uyeol> {
 }
 
 void main() {
-  runApp(MaterialApp(
-    home: uyeol(),
+  runApp(const MaterialApp(
+    home: UyeOl(),
   ));
 }

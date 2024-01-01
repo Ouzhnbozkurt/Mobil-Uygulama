@@ -5,7 +5,7 @@ import 'package:mobil_uygulama/girisyap.dart';
 import 'package:mobil_uygulama/profil.dart';
 import 'package:mobil_uygulama/anasayfa.dart';
 import 'package:mobil_uygulama/sepet.dart';
-import 'package:mobil_uygulama/urunyonetimi.dart';
+import 'package:mobil_uygulama/urunekle.dart';
 
 import 'firebase_options.dart';
 
@@ -32,7 +32,7 @@ class GirisKontrol extends StatelessWidget {
       return Urunler();
     } else {
       // Kullanıcı giriş yapmamışsa Girisyap sayfasına yönlendir
-      return girisyap();
+      return GirisYap();
     }
   }
 }
@@ -65,7 +65,7 @@ class _UrunlerState extends State<Urunler> {
       bottomNavigationBar: BottomNavigationBar(
         items: _buildBottomNavBarItems(user),
         currentIndex: _seciliIndex,
-        selectedItemColor: Colors.amber[800],
+        selectedItemColor: Colors.deepOrangeAccent,
         onTap: _onItemTapped,
       ),
     );
@@ -111,15 +111,15 @@ class _UrunlerState extends State<Urunler> {
     User? user = FirebaseAuth.instance.currentUser;
     switch (index) {
       case 0:
-        return anasayfa();
+        return const Anasayfa();
       case 1:
           if (user != null && user.email == "admin@admin.com") {
-            return urunyonetimi();
+            return const UrunEkle();
           } else {
-            return sepet();
+            return const Sepet();
           }
       case 2:
-        return profil();
+        return const Profil();
       default:
         return Container(); // Yedek, boş bir container veya hata sayfası eklenebilir.
     }
