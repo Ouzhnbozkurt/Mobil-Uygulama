@@ -4,12 +4,14 @@ import 'package:mobil_uygulama/services/productService.dart';
 class UrunDuzenle extends StatefulWidget {
   final String productId;
   final String productName;
+  final String productDesc;
   final double productPrice;
 
   const UrunDuzenle({
     Key? key,
     required this.productId,
     required this.productName,
+    required this.productDesc,
     required this.productPrice,
   }) : super(key: key);
 
@@ -19,6 +21,7 @@ class UrunDuzenle extends StatefulWidget {
 
 class UrunDuzenleState extends State<UrunDuzenle> {
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _descController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
 
   final ProductService _productService = ProductService();
@@ -29,6 +32,7 @@ class UrunDuzenleState extends State<UrunDuzenle> {
   void initState() {
     super.initState();
     _nameController.text = widget.productName;
+    _descController.text = widget.productDesc;
     _priceController.text = widget.productPrice.toString();
   }
 
@@ -54,6 +58,20 @@ class UrunDuzenleState extends State<UrunDuzenle> {
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Ürün adı boş olamaz';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16.0),
+              const Text('Ürün Açıklaması'),
+              TextFormField(
+                controller: _descController,
+                decoration: const InputDecoration(
+                  hintText: 'Ürün Açıklaması',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Ürün Açıklaması boş olamaz';
                   }
                   return null;
                 },
@@ -88,11 +106,13 @@ class UrunDuzenleState extends State<UrunDuzenle> {
                       if (_formKey.currentState?.validate() ?? false) {
                         // Ürünü güncelleme işlemleri
                         String newName = _nameController.text;
+                        String newDesc = _descController.text;
                         double newPrice = double.tryParse(_priceController.text) ?? 0.0;
 
                         await _productService.updateProduct(
                           productId: widget.productId,
                           newName: newName,
+                          newDesc: newDesc,
                           newPrice: newPrice,
                         );
 

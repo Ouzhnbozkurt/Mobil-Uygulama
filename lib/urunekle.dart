@@ -12,6 +12,7 @@ class UrunEkle extends StatefulWidget {
 
 class UrunEkleState extends State<UrunEkle> {
   final TextEditingController _urunAdiController = TextEditingController();
+  final TextEditingController _urunAciklamaController = TextEditingController();
   final TextEditingController _urunFiyatiController = TextEditingController();
   final ProductService _productService = ProductService();
   final _formKey = GlobalKey<FormState>(); // Form anahtarı
@@ -32,6 +33,17 @@ class UrunEkleState extends State<UrunEkle> {
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Ürün adı boş olamaz';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16.0),
+              TextFormField(
+                controller: _urunAciklamaController,
+                decoration: const InputDecoration(labelText: 'Ürün Açıklama'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Ürün Açıklama boş olamaz';
                   }
                   return null;
                 },
@@ -76,10 +88,11 @@ class UrunEkleState extends State<UrunEkle> {
   void _onCreateProduct(BuildContext context) {
     if (_formKey.currentState?.validate() ?? false) {
       final String urunAdi = _urunAdiController.text.trim();
+      final String urunAciklama = _urunAciklamaController.text.trim();
       final double urunFiyati =
           double.tryParse(_urunFiyatiController.text.trim()) ?? 0;
 
-      _productService.createProduct(ad: urunAdi, fiyat: urunFiyati);
+      _productService.createProduct(ad: urunAdi, aciklama: urunAciklama, fiyat: urunFiyati);
 
       // Bu sayfayı kapat ve anasayfaya dön
       Navigator.pushReplacement(

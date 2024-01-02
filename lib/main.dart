@@ -57,7 +57,7 @@ class _UrunlerState extends State<Urunler> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Alışveriş Uygulaması'),
+        title: const Text('Gitti Geliyor'),
       ),
       body: Center(
         child: _sayfaGetir(_seciliIndex),

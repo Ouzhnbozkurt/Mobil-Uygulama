@@ -5,10 +5,11 @@ import 'package:fluttertoast/fluttertoast.dart';
 class ProductService {
   final productCollection = FirebaseFirestore.instance.collection("products");
 
-  Future<void> createProduct({required String ad, required double fiyat}) async {
+  Future<void> createProduct({required String ad, required String aciklama, required double fiyat}) async {
     try {
       await productCollection.add({
         "ad": ad,
+        "aciklama": aciklama,
         "fiyat": fiyat,
       });
       Fluttertoast.showToast(
@@ -26,11 +27,13 @@ class ProductService {
   Future<void> updateProduct({
     required String productId,
     required String newName,
+    required String newDesc,
     required double newPrice,
   }) async {
     try {
       await productCollection.doc(productId).update({
         "ad": newName,
+        "aciklama": newDesc,
         "fiyat": newPrice,
       });
       Fluttertoast.showToast(
@@ -70,6 +73,7 @@ class ProductService {
         return {
           "id": doc.id,
           "ad": doc["ad"],
+          "aciklama": doc["aciklama"],
           "fiyat": doc["fiyat"],
         };
       }).toList();

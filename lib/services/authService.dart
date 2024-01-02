@@ -63,6 +63,36 @@ class AuthService {
     return user != null && user.email == "admin@admin.com";
   }
 
+  Future<Map<String, dynamic>?> getCurrentUserInfo() async {
+    final user = firebaseAuth.currentUser;
+
+    if (user != null) {
+      try {
+        final userData = await userCollection
+            .where("email", isEqualTo: user.email)
+            .limit(1)
+            .get();
+
+        if (userData.docs.isNotEmpty) {
+          final userDataMap = userData.docs.first.data();
+          return userDataMap;
+        } else {
+          if (kDebugMode) {
+            print("Kullanıcı bilgisi bulunamadı");
+          }
+          return null;
+        }
+      } catch (e) {
+        if (kDebugMode) {
+          print("Kullanıcı bilgisi getirilirken hata oluştu: $e");
+        }
+        return null;
+      }
+    }
+
+    return null;
+  }
+
   void _navigateToHomePage(BuildContext context) {
     Navigator.pushReplacement(
       context,
