@@ -70,12 +70,13 @@ class AuthService {
       try {
         final userData = await userCollection
             .where("email", isEqualTo: user.email)
-            .limit(1)
             .get();
 
         if (userData.docs.isNotEmpty) {
-          final userDataMap = userData.docs.first.data();
-          return userDataMap;
+          final firstDocument = userData.docs.first;
+          final userDataMap = firstDocument.data();
+          final userId = firstDocument.id;
+          return {...userDataMap, "id": userId};
         } else {
           if (kDebugMode) {
             print("Kullanıcı bilgisi bulunamadı");
@@ -93,10 +94,35 @@ class AuthService {
     return null;
   }
 
+
+  Future<void> updateUserInfo({
+    required String userId,
+    required String name,
+    required String password,
+  }) async {
+    try {
+      await userCollection.doc(userId).update({
+        "name": name,
+        "password": password,
+      });
+
+      Fluttertoast.showToast(
+          msg: "Kullanıcı bilgileri güncellendi.", toastLength: Toast.LENGTH_LONG);
+    } catch (e) {
+      Fluttertoast.showToast(
+          msg: "Kullanıcı bilgileri güncellenirken hata oluştu: $e",
+          toastLength: Toast.LENGTH_LONG);
+      if (kDebugMode) {
+        print("Kullanıcı bilgileri güncellenirken hata oluştu: $e");
+      }
+    }
+  }
+
+
   void _navigateToHomePage(BuildContext context) {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => Urunler()),
+      MaterialPageRoute(builder: (context) => const Urunler()),
     );
   }
 }

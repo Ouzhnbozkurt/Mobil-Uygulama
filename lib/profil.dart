@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mobil_uygulama/isteklistesi.dart';
 import 'package:mobil_uygulama/favoriurunlistesi.dart';
+import 'package:mobil_uygulama/profilduzenle.dart';
 import 'package:mobil_uygulama/main.dart';
 import 'package:mobil_uygulama/services/authService.dart';
 
@@ -29,6 +30,12 @@ class _ProfilState extends State<Profil> {
   Future<void> _updateAdminStatus() async {
     _isAdmin = _authService.isAdmin();
     setState(() {});
+  }
+
+  Future<void> _updateUser() async {
+    setState(() {
+      _userInfo = _authService.getCurrentUserInfo();
+    });
   }
 
   @override
@@ -60,9 +67,11 @@ class _ProfilState extends State<Profil> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const IstekListesi(),
+                                  builder: (context) => ProfilDuzenle(userInfo: _userInfo),
                                 ),
-                              );
+                              ).then((_) {
+                                _updateUser();
+                              });;
                             },
                             child: const Text(
                               'Profil Düzenle',

@@ -38,12 +38,19 @@ class GirisKontrol extends StatelessWidget {
 }
 
 class Urunler extends StatefulWidget {
+  final int? index;
+
+  const Urunler({super.key, this.index = 0}); // Set a default value of 0
+
+
   @override
-  State<Urunler> createState() => _UrunlerState();
+  State<Urunler> createState() => _UrunlerState(index!);
 }
 
 class _UrunlerState extends State<Urunler> {
-  int _seciliIndex = 0;
+  int _seciliIndex;
+  _UrunlerState(this._seciliIndex);
+
 
   void _onItemTapped(int index) {
     setState(() {
