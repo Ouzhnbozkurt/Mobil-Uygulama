@@ -5,6 +5,7 @@ import 'package:mobil_uygulama/girisyap.dart';
 import 'package:mobil_uygulama/profil.dart';
 import 'package:mobil_uygulama/anasayfa.dart';
 import 'package:mobil_uygulama/sepet.dart';
+import 'package:mobil_uygulama/services/notificationService.dart';
 import 'package:mobil_uygulama/urunekle.dart';
 
 import 'firebase_options.dart';
@@ -14,6 +15,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await NotificationService().initNotification();
 
   runApp(MaterialApp(
     home: GirisKontrol(),

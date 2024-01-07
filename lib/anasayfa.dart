@@ -48,6 +48,7 @@ class _AnasayfaState extends State<Anasayfa> {
               productName: product["ad"],
               productDesc: product["aciklama"],
               productPrice: product["fiyat"],
+              productQuantity: product["adet"], // Adet bilgisi
               // Diğer ürün detayları
             ),
           ),
@@ -83,7 +84,13 @@ class _AnasayfaState extends State<Anasayfa> {
                 return Card(
                   child: ListTile(
                     title: Text(urunler[index]["ad"] ?? ""),
-                    subtitle: Text('Fiyat: ${urunler[index]["fiyat"]} TL'),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Adet: ${urunler[index]["adet"] ?? "Belirtilmemiş"}'),
+                        Text('Fiyat: ${urunler[index]["fiyat"]} TL'),
+                      ],
+                    ),
                     onTap: () => _onProductTapped(urunler[index]),
                   ),
                 );

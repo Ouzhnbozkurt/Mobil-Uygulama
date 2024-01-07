@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobil_uygulama/services/notificationService.dart';
 import 'package:mobil_uygulama/services/productService.dart';
 
 class UrunDuzenle extends StatefulWidget {
@@ -6,6 +7,7 @@ class UrunDuzenle extends StatefulWidget {
   final String productName;
   final String productDesc;
   final double productPrice;
+  final int productQuantity;
 
   const UrunDuzenle({
     Key? key,
@@ -13,6 +15,7 @@ class UrunDuzenle extends StatefulWidget {
     required this.productName,
     required this.productDesc,
     required this.productPrice,
+    required this.productQuantity
   }) : super(key: key);
 
   @override
@@ -23,6 +26,7 @@ class UrunDuzenleState extends State<UrunDuzenle> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
+  final TextEditingController _quantityController = TextEditingController();
 
   final ProductService _productService = ProductService();
 
@@ -34,6 +38,7 @@ class UrunDuzenleState extends State<UrunDuzenle> {
     _nameController.text = widget.productName;
     _descController.text = widget.productDesc;
     _priceController.text = widget.productPrice.toString();
+    _quantityController.text = widget.productQuantity.toString();
   }
 
   @override
@@ -77,6 +82,26 @@ class UrunDuzenleState extends State<UrunDuzenle> {
                 },
               ),
               const SizedBox(height: 16.0),
+              const Text('Ürün Adeti'),
+              TextFormField(
+                controller: _quantityController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  hintText: 'Ürün Adeti',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Ürün adeti boş olamaz';
+                  }
+                  // Fiyatı kontrol etmek için özel bir şart ekleyebilirsiniz
+                  // Örneğin: Fiyat 0'dan büyük olmalı
+                  // if (double.tryParse(value) <= 0) {
+                  //   return 'Geçerli bir fiyat girin';
+                  // }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16.0),
               const Text('Ürün Fiyatı'),
               TextFormField(
                 controller: _priceController,
@@ -107,14 +132,23 @@ class UrunDuzenleState extends State<UrunDuzenle> {
                         // Ürünü güncelleme işlemleri
                         String newName = _nameController.text;
                         String newDesc = _descController.text;
+                        int newAdet = int.tryParse(_quantityController.text) ?? 0;
                         double newPrice = double.tryParse(_priceController.text) ?? 0.0;
 
                         await _productService.updateProduct(
                           productId: widget.productId,
                           newName: newName,
                           newDesc: newDesc,
+                          newAdet: newAdet,
                           newPrice: newPrice,
                         );
+
+                        print(widget.productPrice);
+                        if (newPrice > widget.productPrice) {
+                          NotificationService().showNotification(title: "Fiyat Güncellemesi!", body: "${widget.productName} Ürününün Fiyatı Yükseldi...");
+                        } else if (newPrice < widget.productPrice) {
+                          NotificationService().showNotification(title: "Fiyat Güncellemesi!", body: "${widget.productName} Ürününün Fiyatı Düştü...");
+                        } else {}
 
                         // Geri git
                         Navigator.pop(context);

@@ -14,6 +14,8 @@ class UrunEkleState extends State<UrunEkle> {
   final TextEditingController _urunAdiController = TextEditingController();
   final TextEditingController _urunAciklamaController = TextEditingController();
   final TextEditingController _urunFiyatiController = TextEditingController();
+  final TextEditingController _urunAdetiController = TextEditingController();
+
   final ProductService _productService = ProductService();
   final _formKey = GlobalKey<FormState>(); // Form anahtarı
 
@@ -44,6 +46,19 @@ class UrunEkleState extends State<UrunEkle> {
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Ürün Açıklama boş olamaz';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16.0),
+              TextFormField(
+                controller: _urunAdetiController,
+                decoration: const InputDecoration(labelText: 'Ürün Adeti'),
+                keyboardType:
+                const TextInputType.numberWithOptions(decimal: true),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Ürün adeti boş olamaz';
                   }
                   return null;
                 },
@@ -89,10 +104,10 @@ class UrunEkleState extends State<UrunEkle> {
     if (_formKey.currentState?.validate() ?? false) {
       final String urunAdi = _urunAdiController.text.trim();
       final String urunAciklama = _urunAciklamaController.text.trim();
-      final double urunFiyati =
-          double.tryParse(_urunFiyatiController.text.trim()) ?? 0;
+      final double urunFiyati = double.tryParse(_urunFiyatiController.text.trim()) ?? 0;
+      final int urunAdeti = int.tryParse(_urunAdetiController.text.trim()) ?? 0;
 
-      _productService.createProduct(ad: urunAdi, aciklama: urunAciklama, fiyat: urunFiyati);
+      _productService.createProduct(ad: urunAdi, aciklama: urunAciklama, adet: urunAdeti, fiyat: urunFiyati);
 
       // Bu sayfayı kapat ve anasayfaya dön
       Navigator.pushReplacement(
